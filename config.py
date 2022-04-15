@@ -7,7 +7,7 @@ import yaml
 import os
 import sys
 
-BASE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+BASE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)))
 
 with open(BASE_DIR + "/config.yml", "r") as configFile:
     data = configFile.read()
