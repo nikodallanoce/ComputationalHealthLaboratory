@@ -1,0 +1,6 @@
+gseapy>=0.10.8
+matplotlib>=3.2.2
+networkx>=2.6.3
+numpy>=21.6
+pandas>=3.5
+requests>=23.0
