@@ -19,15 +19,12 @@ def retrieve_diseases(nodes: list, threshold: float = 0.1) -> pd.DataFrame:
     return df_diseases
 
 
-def mean_genes_diseases(diseases: dict, verbose: bool = False) -> float:
+def mean_genes_diseases(diseases: dict) -> float:
     mean_size = 0
     for _, disease in diseases.items():
         mean_size += len(disease['genes'])
 
     mean_size /= len(diseases.keys())
-    if verbose:
-        print("Mean number of genes for disease: {0}".format(mean_size))
-
     return mean_size
 
 

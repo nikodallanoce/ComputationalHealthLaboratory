@@ -16,7 +16,7 @@ def __build_network_disease__(protein_graph: nx.Graph, disease_genes: list = Non
             net.add_node(i, label=node, size=16, color="red")
 
     for edge_from, edge_to in protein_graph.edges():
-        if edge_from in disease_genes or edge_to in disease_genes:
+        if edge_from in disease_genes and edge_to in disease_genes:
             net.add_edge(node_index[edge_from], node_index[edge_to], color="red", value=1)
         else:
             net.add_edge(node_index[edge_from], node_index[edge_to])
