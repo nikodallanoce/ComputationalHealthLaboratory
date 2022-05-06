@@ -1,12 +1,10 @@
 import requests
 import numpy as np
-import gseapy as gp
 import pandas as pd
-import networkx as nx
 from config import BASE_URL, ACCESS_KEY
 
 
-def __retrieve_interactions_from_biogrid(proteins_list: list) -> dict:
+def __retrieve_interactions_from_biogrid__(proteins_list: list) -> dict:
     request_url = BASE_URL + "/interactions"
     data = {}
 
@@ -47,7 +45,7 @@ def __retrieve_interactions_from_biogrid(proteins_list: list) -> dict:
     return data
 
 
-def __remove_useless_interactions(dataset: pd.DataFrame) -> pd.DataFrame:
+def __remove_useless_interactions__(dataset: pd.DataFrame) -> pd.DataFrame:
     # Look for duplicated interactions
     duplicated_interactions = pd.DataFrame(np.sort(dataset[["InteractorA", "InteractorB"]].values, 1)).duplicated()
     print("Duplicated interactions:\n{0}".format(duplicated_interactions.value_counts()))
@@ -66,7 +64,7 @@ def __remove_useless_interactions(dataset: pd.DataFrame) -> pd.DataFrame:
 
 def retrieve_interactions(proteins_list: list, gene_interactions: pd.DataFrame) -> pd.DataFrame:
     # Load the data into a pandas dataframe
-    data = __retrieve_interactions_from_biogrid(proteins_list)
+    data = __retrieve_interactions_from_biogrid__(proteins_list)
     dataset = pd.DataFrame.from_dict(data, orient="index")
 
     # Re-order the columns and select only the columns we want to see
@@ -79,25 +77,11 @@ def retrieve_interactions(proteins_list: list, gene_interactions: pd.DataFrame) 
     dataset["InteractorB"] = dataset["InteractorB"].str.upper()
 
     # Remove duplicated and self-interactions
-    dataset = __remove_useless_interactions(dataset)
+    dataset = __remove_useless_interactions__(dataset)
 
     # Concatenate the found interactions with the ones involving the starting gene
     dataset = pd.concat([dataset, gene_interactions])
     return dataset
-
-
-def retrieve_diseases(nodes: list, threshold: float = 0.1) -> pd.DataFrame:
-    enr = gp.enrichr(gene_list=pd.DataFrame(nodes),
-                     gene_sets=['DisGeNET'],  # Datasets from the gp.get_library_name() method
-                     organism='Human',
-                     description='DEGs_up_1d',
-                     outdir='test'
-                     )
-
-    # Keep those pathways with an adjusted p-value < threshold
-    df_diseases = enr.results[enr.results["Adjusted P-value"] < threshold][
-        ["Term", "Overlap", "P-value", "Adjusted P-value", "Genes"]]
-    return df_diseases
 
 
 def intersection(lst1: list, lst2: list) -> list:
@@ -106,58 +90,3 @@ def intersection(lst1: list, lst2: list) -> list:
         set1 = set(lst1)
         inters = [elem for elem in lst2 if elem in set1]
     return inters
-
-
-def build_protein_graph(nodes: list, diseases: dict, interactions: pd.DataFrame) -> nx.Graph:
-    protein_graph = nx.Graph(name='Protein Interactions Graph')
-
-    # Build the nodes
-    for node in nodes:
-        protein_graph.add_node(node, diseases=[])  # Each node will have a list with the disease pathways it belongs to
-
-    # Insert into the nodes their respective diseases
-    for i, disease in diseases.items():
-        disease_genes = disease['genes']
-        for gene in disease_genes:
-            protein_graph.nodes[gene]["diseases"].append(i)
-
-    # Build the edges
-    for _, interaction in interactions.iterrows():
-        first_protein, second_protein = interaction[0], interaction[1]  # Proteins involved in the interaction
-
-        # Retrieve the proteins' diseases
-        prot1_dis = protein_graph.nodes()[interaction[0]]['diseases']
-        prot2_dis = protein_graph.nodes()[interaction[1]]['diseases']
-
-        # Build the edge
-        protein_graph.add_edge(first_protein, second_protein, weight=len(intersection(prot1_dis, prot2_dis)))
-
-    return protein_graph
-
-
-def nodes_no_diseases(protein_graph: nx.Graph, out: str = "size"):
-    nodes_no_disease = list()
-    for node in protein_graph.nodes:
-        if len(protein_graph.nodes[node]["diseases"]) == 0:
-            nodes_no_disease.append(str(node))
-
-    if out == "size":
-        return len(nodes_no_disease)
-    elif out == "nodes":
-        return nodes_no_disease
-    else:
-        return nodes_no_disease, len(nodes_no_disease)
-
-
-def edges_no_diseases(protein_graph: nx.Graph, out: str = "size"):
-    edges_no_disease = list()
-    for edge in protein_graph.edges:
-        if protein_graph.edges[edge]["weight"] == 0:
-            edges_no_disease.append(str(edge))
-
-    if out == "size":
-        return len(edges_no_disease)
-    elif out == "nodes":
-        return edges_no_disease
-    else:
-        return edges_no_disease, len(edges_no_disease)

@@ -1,4 +1,5 @@
 import networkx as nx
+import seaborn as sn
 from pyvis.network import Network
 import numpy as np
 from communities import look_for_gene_community
@@ -85,3 +86,33 @@ def plot_community_disease(protein_graph: nx.Graph, disease_genes: list, communi
     net.show_buttons(['physics'])
     net.force_atlas_2based(spring_strength=0.02)
     net.show("community_disease_graph.html")
+
+
+def plot_communities(protein_graph: nx.Graph, communities: list, protein: str = None) -> None:
+    palette = sn.color_palette("Accent", len(communities)).as_hex()
+    net = Network(width=1080, height=720)
+    node_index = dict()
+    index = 0
+    gene_community = look_for_gene_community(protein, communities)
+    if gene_community == -1:
+        raise Warning("Protein {0} not found, no community will be highlighted with gold".format(protein))
+
+    for i in range(len(communities)):
+        community = communities[i]
+        color = palette[i]
+        sub_graph = protein_graph.subgraph(community)
+        for _, node in enumerate(sub_graph.nodes()):
+            node_index[node] = index
+            if node == protein:
+                net.add_node(index, label=node, size=32)
+            else:
+                net.add_node(index, label=node, size=8)
+
+            index += 1
+
+        for edge_from, edge_to in sub_graph.edges():
+            net.add_edge(node_index[edge_from], node_index[edge_to], color=color)
+
+    net.show_buttons(['physics'])
+    net.force_atlas_2based(spring_strength=0.02)
+    net.show("communities.html")
