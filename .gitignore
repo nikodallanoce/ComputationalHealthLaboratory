@@ -151,3 +151,6 @@ fabric.properties
 
 *DS_Store*
 config.yml
+
+*.html
+*.cyjs
