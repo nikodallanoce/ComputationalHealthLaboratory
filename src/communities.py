@@ -111,13 +111,13 @@ def communities_distance(communities_rank: pd.DataFrame,
     tmp_second = tmp_second[~tmp_second['Disease'].isin(shared_diseases["Disease"])]
 
     distance = 0
-    for i, disease in shared_diseases.iterrows():
+    for _, disease in shared_diseases.iterrows():
         distance += np.power(disease[metric + "_x"] - disease[metric + "_y"], 2)
 
-    for i, first_disease in tmp_first.iterrows():
+    for _, first_disease in tmp_first.iterrows():
         distance += np.power(first_disease[metric], 2)
 
-    for i, second_disease in tmp_second.iterrows():
+    for _, second_disease in tmp_second.iterrows():
         distance += np.power(second_disease[metric], 2)
 
     return distance
