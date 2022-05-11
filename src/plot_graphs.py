@@ -5,26 +5,43 @@ import numpy as np
 from communities import look_for_gene_community
 
 
-def __build_network_disease__(protein_graph: nx.Graph, disease_genes: list = None) -> Network:
+def __build_network_disease__(protein_graph: nx.Graph,
+                              disease_genes: list = None,
+                              protein: str = None,
+                              plot_other_edges: bool = True) -> Network:
     net = Network(width=1080, height=720)
     node_index = dict()
     for i, node in enumerate(protein_graph.nodes()):
+        shape = "dot"
+        size = 8
+        color = "blue"
         node_index[node] = i
-        if node not in disease_genes:
-            net.add_node(i, label=node, size=8)
-        else:
-            net.add_node(i, label=node, size=16, color="red")
+        if disease_genes is not None and node in disease_genes:
+            color = "orange"
+            size = 16
+            shape = "diamond"
+
+        if node == protein:
+            color = "yellowgreen"
+            size = 16
+
+        net.add_node(i, label=node, size=size, color=color, shape=shape)
 
     for edge_from, edge_to in protein_graph.edges():
-        if edge_from in disease_genes and edge_to in disease_genes:
-            net.add_edge(node_index[edge_from], node_index[edge_to], color="red", value=1)
-        else:
-            net.add_edge(node_index[edge_from], node_index[edge_to])
+        if disease_genes is not None and ((edge_from == protein and edge_to in disease_genes) or
+                                          (edge_from in disease_genes and edge_to == protein)):
+            net.add_edge(node_index[edge_from], node_index[edge_to], color="green", value=1)
+        elif disease_genes is not None and edge_from in disease_genes and edge_to in disease_genes:
+            net.add_edge(node_index[edge_from], node_index[edge_to], color="orangered", value=1)
+        elif plot_other_edges:
+            net.add_edge(node_index[edge_from], node_index[edge_to], color="blue")
 
     return net
 
 
-def __build_network_protein__(protein_graph: nx.Graph, protein: str = None) -> Network:
+def __build_network_protein__(protein_graph: nx.Graph,
+                              protein: str = None,
+                              plot_other_edges: bool = True) -> Network:
     net = Network(width=1080, height=720)
     node_index = dict()
     for i, node in enumerate(protein_graph.nodes()):
@@ -32,24 +49,28 @@ def __build_network_protein__(protein_graph: nx.Graph, protein: str = None) -> N
         if node != protein:
             net.add_node(i, label=node, size=8)
         else:
-            net.add_node(i, label=node, size=16, color="red")
+            net.add_node(i, label=node, size=16, color="yellowgreen")
 
     for edge_from, edge_to in protein_graph.edges():
         if edge_from == protein or edge_to == protein:
-            net.add_edge(node_index[edge_from], node_index[edge_to], color="red", value=1)
-        else:
+            net.add_edge(node_index[edge_from], node_index[edge_to], color="green", value=1)
+        elif plot_other_edges:
             net.add_edge(node_index[edge_from], node_index[edge_to])
 
     return net
 
 
-def plot_protein_network(protein_graph: nx.Graph, disease_genes: list = None, biomarkers: list = None) -> None:
+def plot_protein_network(protein_graph: nx.Graph,
+                         disease_genes: list = None,
+                         biomarkers: list = None,
+                         protein: str = None,
+                         plot_other_edges: bool = True) -> None:
     if biomarkers is not None:
         plot_graph = protein_graph.subgraph(biomarkers)
     else:
         plot_graph = protein_graph.copy()
 
-    net = __build_network_disease__(plot_graph, disease_genes)
+    net = __build_network_disease__(plot_graph, disease_genes, protein, plot_other_edges)
     net.toggle_drag_nodes(False)
     net.show_buttons(['physics'])
     net.force_atlas_2based(spring_strength=0.02)
@@ -65,23 +86,30 @@ def plot_disease_network(protein_graph: nx.Graph, disease_genes: list, protein: 
     net.show("disease_graph.html")
 
 
-def plot_community_protein(protein_graph: nx.Graph, communities: list, protein: str = None) -> None:
+def plot_community_protein(protein_graph: nx.Graph,
+                           communities: list,
+                           protein: str = None,
+                           plot_other_edges: bool = True) -> None:
     if protein is not None:
         community = communities[look_for_gene_community(protein, communities)]
     else:
         community = np.random.randint(0, len(communities))
 
     sub_graph = protein_graph.subgraph(community)
-    net = __build_network_protein__(sub_graph, protein)
+    net = __build_network_protein__(sub_graph, protein, plot_other_edges)
     net.toggle_drag_nodes(False)
     net.show_buttons(['physics'])
     net.force_atlas_2based(spring_strength=0.02)
     net.show("community_protein_graph.html")
 
 
-def plot_community_disease(protein_graph: nx.Graph, disease_genes: list, community: set) -> None:
+def plot_community_disease(protein_graph: nx.Graph,
+                           disease_genes: list,
+                           community: set,
+                           protein: str = None,
+                           plot_other_edges: bool = True) -> None:
     sub_graph = protein_graph.subgraph(community)
-    net = __build_network_disease__(sub_graph, disease_genes)
+    net = __build_network_disease__(sub_graph, disease_genes, protein, plot_other_edges)
     net.toggle_drag_nodes(False)
     net.show_buttons(['physics'])
     net.force_atlas_2based(spring_strength=0.02)
@@ -89,7 +117,7 @@ def plot_community_disease(protein_graph: nx.Graph, disease_genes: list, communi
 
 
 def plot_communities(protein_graph: nx.Graph, communities: list, protein: str = None) -> None:
-    palette = sn.color_palette("Accent", len(communities)).as_hex()
+    palette = sn.color_palette("tab10", len(communities)).as_hex()
     net = Network(width=1080, height=720)
     node_index = dict()
     index = 0
