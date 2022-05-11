@@ -38,7 +38,7 @@ Starting from one or more genes, extract from interaction databases the genes th
     ├── 📄protein_to_protein_graph.py
     └── 📄utilities.py
 ```
-## How to use the project
+## How to run the project
 First, clone the repo
 ```
 git clone https://github.com/nikodallanoce/ComputationalHealthLaboratory
@@ -49,5 +49,7 @@ pip install -r requirements.txt
 ```
 Then you can work with the notebooks and our package, for a deeper understanding of our work, use **4_Project_CHL.ipynb** to run the entire project.
 ## Resources
-- https://thebiogrid.com/
-- https://reactome.org/
+- [BioGRID](https://thebiogrid.com/)
+- [DisGeNET](https://www.disgenet.org/)
+- [GSEApy](https://github.com/zqfang/GSEApy)
+- [networkx](https://github.com/networkx/networkx)
