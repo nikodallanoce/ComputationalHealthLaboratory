@@ -5,6 +5,12 @@ from config import BASE_URL, ACCESS_KEY
 
 
 def __retrieve_interactions_from_biogrid__(proteins_list: list) -> dict:
+    """
+    Retrieve the first and second order interactions from the BioGRID dataset starting from a list of proteins
+    :param proteins_list: list of proteins, the first order genes of the starting protein
+    :return: a dict of all the first order interactions and those interactions between nodes at the first and
+    second order
+    """
     request_url = BASE_URL + "/interactions"
     data = {}
 
@@ -46,6 +52,11 @@ def __retrieve_interactions_from_biogrid__(proteins_list: list) -> dict:
 
 
 def __remove_useless_interactions__(dataset: pd.DataFrame) -> pd.DataFrame:
+    """
+    Removes duplicated and self-loop interactions from the interactions dataframe
+    :param dataset: dataframe of interactions retrieved from BioGRID
+    :return: cleaned interactions dataframe
+    """
     # Look for duplicated interactions
     duplicated_interactions = pd.DataFrame(np.sort(dataset[["InteractorA", "InteractorB"]].values, 1)).duplicated()
     print("Duplicated interactions:\n{0}".format(duplicated_interactions.value_counts()))
@@ -63,6 +74,12 @@ def __remove_useless_interactions__(dataset: pd.DataFrame) -> pd.DataFrame:
 
 
 def retrieve_interactions(proteins_list: list, gene_interactions: pd.DataFrame) -> pd.DataFrame:
+    """
+    Retrieve all the interactions between the passed genes and their second order interactions
+    :param proteins_list: list of first order proteins with respect to the starting gene
+    :param gene_interactions: interactions dataframe of the starting gene
+    :return: expanded gene interactions dataframe with the first and second order interactions
+    """
     # Load the data into a pandas dataframe
     data = __retrieve_interactions_from_biogrid__(proteins_list)
     dataset = pd.DataFrame.from_dict(data, orient="index")
@@ -85,6 +102,12 @@ def retrieve_interactions(proteins_list: list, gene_interactions: pd.DataFrame) 
 
 
 def intersection(lst1: list, lst2: list) -> list:
+    """
+    Computes the intersection between two lists
+    :param lst1: list of proteins or diseases
+    :param lst2: list of proteins or diseases
+    :return: the intersection between the lists
+    """
     inters = list()
     if not (len(lst1) == 0 or len(lst2) == 0):
         set1 = set(lst1)
