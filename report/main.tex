@@ -1,0 +1,62 @@
+\documentclass[11pt, letterpaper]{article}  % change to >11 pt if you like, and change article with report
+\usepackage[letterpaper, top=3.71cm, bottom=3.20cm, left=2.86cm, right=2.86cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{chngcntr}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{url}
+\definecolor{bg}{gray}{0.95}
+\usepackage{minted}
+\usepackage[table, dvipsnames]{xcolor}
+\usepackage{mathtools, nccmath}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+\usepackage[table, dvipsnames]{xcolor}
+\newtheorem{theorem}{Theorem}
+\numberwithin{equation}{section}
+\counterwithin{figure}{section}
+\pagenumbering{gobble}
+
+
+\title{\vspace{-2cm}\textbf{Computational Health Laboratory project report}}
+\author{\textbf{\small{\textit{Dalla Noce Niko, Ristori Alessandro, Zuppolini Andrea}}} \\ % put your full name here
+        \small{Master Degree in Computer science.}\\ \small{{n.dallanoce@studenti.unipi.it, a.ristori5@studenti.unipi.it, a.zuppolini@studenti.unipi.it}.} \\  % put your Master Degree here
+        \small{Computational Health Laboratory, Academic Year: 2021/2022} \\
+        \small{Date: 16/05/2022} \\
+       \textbf{\small{\url{https://github.com/nikodallanoce/ComputationalHealthLaboratory}}}
+}
+
+\renewcommand\refname{} %remove this line to automatically show the bibliography header
+
+\begin{document}
+\nocite{*}  % comment this line to list only the articles you really cite
+\date{}
+\maketitle
+\begin{center}
+    \includegraphics[width=0.3\textwidth]{images/unipi.png} \\
+    \vspace{0.5cm}
+\end{center}
+\begin{abstract}
+Starting from one or more genes, extract from interaction databases the genes they interact with. Using the expanded gene set, perform pathway analysis and obtain all disease pathways in which the genes appear. Merge the pathways to obtain a larger graph. Perform further network analysis to extract central biomarkers and communities beyond pathways. Compute a distance between the initial gene set and the various pathways (diseases).
+\end{abstract}
+\newpage
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\pagenumbering{arabic}
+\include{chapters/introduction}
+\include{chapters/geneset_expansion}
+\include{chapters/pathway_enrichment}
+\include{chapters/network_analysis}
+\include{chapters/community_analysis}
+\include{chapters/results}
+\include{chapters/run_project}
+\include{chapters/references}
+\end{document}

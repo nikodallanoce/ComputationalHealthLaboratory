@@ -1,0 +1,18 @@
+\section{Introduction}\label{sec:introduction}
+\subsection{Setting and case study}\label{subsec:settings_case_study}
+The Zhu-Tokita-Takenouchi-Kim (ZTTK) syndrome is a recently discovered disease caused by loss of functions in the gene SON \cite{kushary2021zttk}. The heterozygous mutations in this gene is autosomal dominant, with high probability of being inherited.
+\vspace{3mm}
+
+The most common feature of the ZTTK are intellectual disability, facial dysmorphism, brain malformation and other features linked to brain and the development of the individual but also ocular, facial and physiological features appears to be linked. There are two main ways to detect ZTTK: Brain imaging and WES (whole exome sequencing). The former is a common methodology and the patient showed many abnormalities in form and shape of the brain, but those characteristics are widely shared with many other neurological diseases. The latter is more precise and guarantees good results in identifying mutations in the gene, being more expensive.
+\vspace{3mm}
+
+The difficulties in diagnosis and the poor quantity of data available make the ZTTK a hard disease both to study and identify. Since the only known responsible, up to now, is the SON gene, it becomes tough to circumscribe the set of causes and effects of the ZTTK. In those cases, techniques like geneset augmentation, pathway finding, pathway analysis, clustering and community detection, can really provide powerful tools to the researchers on the field to simplify their analysis and give them relevant statistics helpful to their experimenting.
+
+\subsection{Project roadmap}\label{subsec:project_roadmap}
+This project report follows the roadmap we present here:
+\begin{enumerate}
+    \item \textbf{Geneset-expansion}, starting from the gene SON and its interactions, we have expanded our set using $1^{st}$ and $2^{nd}$ order neighbourhood, querying the BioGRID \cite{biogrid} database. The network was now big enough to find other pathways;
+    \item \textbf{Pathway enrichment}, using the GSEApy \footnote{https://github.com/zqfang/GSEApy} package we have performed pathway enrichment with the data in the DisGeNET \cite{disgenet} to  associate the genes with the disease pathways they contribute to;
+    \item\textbf{Network analysis}, after building the network, two metrics have been deployed to analyze the diseases on it, such as the distance among the pathway components, the largest pathway component size. Afterwards, we have used the node's degree inside the network to extract the most significant biomarkers;
+    \item \textbf{Community analysis}, as first step we decided on using the Louvain method for detecting the communities, we found between $8-11$ communities starting from the graph we have built, weighting the edges using the number of shared diseases between the couples of nodes. Then we compared the pathways in the community we have found for the SON gene with the known relevant effect of the ZTTK syndrom, along with many other metrics.
+\end{enumerate}

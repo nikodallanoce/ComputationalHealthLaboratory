@@ -1,0 +1,19 @@
+\appendix
+\section{How to run the project}\label{sec:run_project}
+The project is hosted on a github repository, so to work with there is just need to clone it.
+\begin{minted}[fontsize=\small, breaklines]{bash}
+git clone https://github.com/nikodallanoce/ComputationalHealthLaboratory
+\end{minted}
+Then, create a new python or conda environment (higly recommended) or install the required packages under an already existing environment.
+\begin{minted}[fontsize=\small, breaklines]{bash}
+pip install -r requirements.txt
+\end{minted}
+After that you can run the the jupyter notebooks, which follow the roadmap explained in \autoref{subsec:project_roadmap}:
+\begin{itemize}
+    \item \textbf{0\_Pathway\_Enrichment.ipynb}, deals with \autoref{sec:geneset_expansion} and \autoref{sec:pathway_enrichment}.
+    \item \textbf{1\_Network\_Analysis.ipynb}, deals with \autoref{sec:network_analysis}.
+    \item \textbf{2\_Community\_Analysis.ipynb}, deals with \autoref{sec:community_analysis}.
+    \item \textbf{3\_Plots.ipynb}, methods to plot the protein, disease and community graphs.
+    \item \textbf{4\_Project\_CHL.ipynb}, all the previous notebooks above combined.
+\end{itemize}
+It is also extremely important to modify the \textit{config.yml} with a valid token to access the BioGRID \cite{biogrid} datasets. You can also check the source methods inside the \textit{src} directory to have a better look on our work.
