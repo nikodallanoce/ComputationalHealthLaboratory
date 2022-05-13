@@ -235,3 +235,25 @@ def retrieve_gene_community_diseases(communities: list,
     diseases_gene = disease_rank[disease_rank['Disease'].isin(gene_diseases)].sort_values(by="Relevance",
                                                                                           ascending=False)
     return diseases_no_gene, diseases_gene
+
+
+def disease_genes_community_interacting_with(community_graph: nx.Graph,
+                                             genes_disease: list = None,
+                                             protein: str = None) -> list:
+    """
+    Retrieve all the genes that belongs to a disease pathway that interact with the passed protein
+    :param community_graph: subgraph of the protein-to-protein network, represents the community in which the protein
+    was found, we advise to use the look_for_gene_community() method to find such community
+    :param genes_disease: genes that belong to a disease pathway
+    :param protein: name of the protein
+    :return: list of genes, which lie inside the community, that interact with the protein and belong to the disease
+    """
+    genes_interacting = list()
+    for edge_from, edge_to in community_graph.edges():
+        if (edge_from in genes_disease or edge_to in genes_disease) and (edge_from == protein or edge_to == protein):
+            if not edge_from == protein:
+                genes_interacting.append(edge_from)
+            else:
+                genes_interacting.append(edge_to)
+
+    return genes_interacting
