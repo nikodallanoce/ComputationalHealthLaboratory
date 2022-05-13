@@ -4,6 +4,25 @@ import pandas as pd
 from config import BASE_URL, ACCESS_KEY
 
 
+def build_starting_gene_interactions(interactions_dataset: str) -> pd.DataFrame:
+    """
+    Starting from an gene's interactions dataset from BioGRID, create a pandas dataframe and
+    choose only the needed columns
+    :param interactions_dataset: the dataset from BioGRID in tab3 format
+    :return: pandas dataframe of the gene interactons
+    """
+    # Build the interactions dataframe, choose and rename the needed columns
+    gene_starting_interactions = pd.read_table(interactions_dataset)
+    gene_starting_interactions.rename(columns={"Official Symbol Interactor A": "InteractorA",
+                                      "Official Symbol Interactor B": "InteractorB"}, inplace=True)
+    gene_starting_interactions = gene_starting_interactions[["InteractorA", "InteractorB"]]
+
+    # Put uppercase all the genes inside each interaction
+    gene_starting_interactions["InteractorA"] = gene_starting_interactions["InteractorA"].str.upper()
+    gene_starting_interactions["InteractorB"] = gene_starting_interactions["InteractorB"].str.upper()
+    return gene_starting_interactions
+
+
 def __retrieve_interactions_from_biogrid__(proteins_list: list) -> dict:
     """
     Retrieve the first and second order interactions from the BioGRID dataset starting from a list of proteins
@@ -51,25 +70,53 @@ def __retrieve_interactions_from_biogrid__(proteins_list: list) -> dict:
     return data
 
 
-def __remove_useless_interactions__(dataset: pd.DataFrame) -> pd.DataFrame:
+def remove_duplicated_interactions(interactions_dataset: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
     """
-    Removes duplicated and self-loop interactions from the interactions dataframe
-    :param dataset: dataframe of interactions retrieved from BioGRID
+    Remove all the duplicated interactions from the interactions dataframe
+    :param interactions_dataset: dataframe of interactions retrieved from BioGRID
+    :param verbose: print or not the amount of removed and kept interactions
     :return: cleaned interactions dataframe
     """
     # Look for duplicated interactions
-    duplicated_interactions = pd.DataFrame(np.sort(dataset[["InteractorA", "InteractorB"]].values, 1)).duplicated()
-    print("Duplicated interactions:\n{0}".format(duplicated_interactions.value_counts()))
+    duplicated_interactions = pd.DataFrame(np.sort(
+        interactions_dataset[["InteractorA", "InteractorB"]].values, 1)).duplicated()
+    if verbose:
+        print("Duplicated interactions:\n{0}".format(duplicated_interactions.value_counts()))
 
     # Delete such interactions from the dataset
-    dataset = dataset[~duplicated_interactions.values]
+    cleaned_interactions_dataset = interactions_dataset[~duplicated_interactions.values]
+    return cleaned_interactions_dataset
 
+
+def remove_self_loop_interactions(interactions_dataset: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
+    """
+    Removes self-loop interactions from the interactions dataframe
+    :param interactions_dataset: dataframe of interactions retrieved from BioGRID
+    :param verbose: print or not the amount of removed and kept interactions
+    :return: cleaned interactions dataframe
+    """
     # Look for interactions where both proteins are the same
-    same_proteins_interactions = pd.Series(dataset[["InteractorA", "InteractorB"]].nunique(axis=1) == 1)
-    print("Useless interactions:\n{0}".format(same_proteins_interactions.value_counts()))
+    same_proteins_interactions = pd.Series(interactions_dataset[["InteractorA", "InteractorB"]].nunique(axis=1) == 1)
+    if verbose:
+        print("Useless interactions:\n{0}".format(same_proteins_interactions.value_counts()))
 
     # Delete such interactions from the dataset
-    dataset = dataset[~same_proteins_interactions.values]
+    cleaned_interactions_dataset = interactions_dataset[~same_proteins_interactions.values]
+    return cleaned_interactions_dataset
+
+
+def remove_useless_interactions(dataset: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
+    """
+    Removes duplicated and self-loop interactions from the interactions dataframe
+    :param dataset: dataframe of interactions retrieved from BioGRID
+    :param verbose: print or not the amount of removed and kept interactions
+    :return: cleaned interactions dataframe
+    """
+    # Remove duplicated interactions
+    dataset = remove_duplicated_interactions(dataset, verbose)
+
+    # Remove self-loop interactions
+    dataset = remove_self_loop_interactions(dataset, verbose)
     return dataset
 
 
@@ -94,7 +141,7 @@ def retrieve_interactions(proteins_list: list, gene_interactions: pd.DataFrame) 
     dataset["InteractorB"] = dataset["InteractorB"].str.upper()
 
     # Remove duplicated and self-interactions
-    dataset = __remove_useless_interactions__(dataset)
+    dataset = remove_useless_interactions(dataset)
 
     # Concatenate the found interactions with the ones involving the starting gene
     dataset = pd.concat([dataset, gene_interactions])
