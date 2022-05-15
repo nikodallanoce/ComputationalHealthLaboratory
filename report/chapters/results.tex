@@ -5,7 +5,7 @@ In this section we show the results of the community analysis performed in the S
 In \autoref{fig:diseases_son_community} we show the top 10 most relevant diseases inside the SON community:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{images/top20_diseases_connected.png}
+    \includegraphics[width=0.9\linewidth]{images/top20_diseases_connected_highlighted.png}
     \caption{Diseases found in the SON community ordered by Relevance}
     \label{fig:diseases_son_community}
 \end{figure}
@@ -54,7 +54,7 @@ Let's now plot in \autoref{fig:undergrowth_SON} and \autoref{fig:strabismus_SON}
 To investigate potential undiscovered correlations between genes in the community and the SON gene, we will now try to explore the diseases which do not contain the latter but manifest a strong interaction in its community. In particular, it is very useful plotting these disease pathways in order to see which of them interact with SON. In \autoref{fig:top_20_diseases_disconnected} we show the collected top 20 diseases that don't have the SON gene in their pathway, ordered by the "Relevance" metric.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{images/top20_diseases_disconnected.png}
+    \includegraphics[width=0.8\linewidth]{images/top20_diseases_disconnected_highlighted.png}
     \caption{The top 20 diseases disconnected from SON, but in its same community.}
     \label{fig:top_20_diseases_disconnected}
 \end{figure}
@@ -85,6 +85,36 @@ Furthermore we present some plots (\autoref{fig:small_head_NO_SON}, \autoref{fig
     \caption{Hyperreflexia disease pathway within the SON community. Blue edges highlights the interaction between the SON gene and the genes inside the pathway.}
     \label{fig:hyperreflexia_NO_SON}
 \end{figure}
+
+\autoref{fig:small_head_NO_SON}, \autoref{fig:epilepsy_NO_SON} and \autoref{fig:hyperreflexia_NO_SON} could be particularly useful for experts because they point out the candidates genes to investigate on (the ones that interact with SON), we present them in \autoref{tab:disease_genes_interactions} for two chosen disease pathways.
+\begin{table}[H]
+\centering
+\begin{tabular}{cc||cc}\hline \hline
+    \multicolumn{4}{c}{\textbf{SON interactions with genes in disease pathways}} \\
+    \hline \hline
+    \multicolumn{2}{c||}{\textbf{Small head disease}} & \multicolumn{2}{c}{\textbf{Epilepsy}} \\
+    \hline
+    \textbf{Identifier} & \textbf{Name} & \textbf{Identifier} & \textbf{Name} \\
+    \hline \hline
+    \multirow{2}{*}{CIT} & Citron Rho-Interacting & \multirow{2}{*}{PRDM16} & Histone-Lysine  \\
+    & Serine/Threonine Kinas & & N-Methyltransferase \\ \hline
+    
+    \multirow{2}{*}{PRDM16} & Histone-Lysine & \multirow{2}{*}{UBE2A} & Ubiquitin-Conjugating  \\
+    & N-Methyltransferase & & Enzyme E2A \\ \hline
+    
+    \multirow{2}{*}{EFTUD2} & Elongation Factor Tu GTP & \multirow{2}{*}{NDUFAF2} & Myc-Induced \\
+    & Binding Domain Containing 2 & & Mitochondrial Protein \\ \hline
+    
+    \multirow{2}{*}{DCPS} & Histidine Triad & \cellcolor{gray!30} & \cellcolor{gray!30} \\
+    &  Nucleotide-Binding Protein 5 & \cellcolor{gray!30} & \cellcolor{gray!30} \\ \hline
+    
+    \multirow{2}{*}{FANCD2} & Fanconi Anemia & \cellcolor{gray!30} & \cellcolor{gray!30} \\
+    & Complementation Group D2 & \cellcolor{gray!30} & \cellcolor{gray!30} \\
+    \hline \hline
+\end{tabular}
+\caption{Genes of two diseases, \textit{Small head} and \textit{Epilepsy}, that interact with the SON gene}
+\label{tab:disease_genes_interactions}
+\end{table}
 
 \subsection{Final considerations}\label{subsec:final_considerations}
 For most of us this has been the first approach to bioinformatics, as such we faced many difficulties, especially in the absence of a uniform notation for the data, in the different ways each database uses to represent the knowledge. 
