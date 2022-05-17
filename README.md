@@ -17,6 +17,8 @@ Starting from one or more genes, extract from interaction databases the genes th
 ├── 📄config_example.yml  # Replace this with your customized configuration file
 ├── 📄config.py  # Method to retrieve data from BioGRID
 ├── 📂datasets  # Datasets used by the project
+│   ├── 🗃️BIOGRID.tab3.txt  # The starting gene interactions used for our analysis
+│   ├── 🗃️BIOGRID_updated.tab3.txt  # The updated starting gene interactions
 │   ├── 🗃️biomarkers.csv  # Central nodes
 │   ├── 🗃️communities.csv  # Communities of the protein-to-protein graph
 │   ├── 🗃️communities_metrics.csv
@@ -27,9 +29,14 @@ Starting from one or more genes, extract from interaction databases the genes th
 │   ├── 🗃️geneset.csv  # Starting gene interactions, retrieved by BioGRID
 │   ├── 🗃️interactions.csv  # Expanded gene interactions dataset
 │   ├── 🗃️mean_distances.csv
-│   ├── 🗃️modularities.csv
 │   └── 🗃️protein_graph.gpickle  # Protein-to-protein graph
+├── 📂presentation  # Project final presentation
+│   ├── 📄DallaNoceRistoriZuppolini_presentation.pdf
+│   └── 📄DallaNoceRistoriZuppolini_presentation.pptx
 ├── 📄README.md
+├── 📂report  # Project report files
+│   ├── 📄DallaNoceRistoriZuppolini_report.pdf  # Project report
+│   └── 📄...  # Other Latex files for the report
 ├── 📄requirements.txt
 └── 📂src  # Project methods
     ├── 📄communities.py
@@ -47,9 +54,10 @@ Install all the required packages
 ```
 pip install -r requirements.txt
 ```
-Then you can work with the notebooks and our package, for a deeper understanding of our work, use **4_Project_CHL.ipynb** to run the entire project.
+Then you can work with the notebooks and our package, for a deeper understanding of our work, use **4_Project_CHL.ipynb** to run the entire project, we strongly advise to change the protein's name with one of your choice or you can try with the same one worked with.
 ## Resources
 - [BioGRID](https://thebiogrid.com/)
 - [DisGeNET](https://www.disgenet.org/)
 - [GSEApy](https://github.com/zqfang/GSEApy)
 - [networkx](https://github.com/networkx/networkx)
+- [pyvis](https://github.com/WestHealth/pyvis)
